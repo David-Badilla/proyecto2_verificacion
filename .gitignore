@@ -1,0 +1,10 @@
+.fsm.sch.verilog.xml
+csrc/
+log_test
+novas.conf
+salida
+salida.daidir/
+salida.vdb/
+ucli.key
+vc_hdrs.h
+verdiLog/
