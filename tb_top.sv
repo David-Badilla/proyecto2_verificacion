@@ -49,7 +49,9 @@ module tb_top;
 
 		a=-8010.2121;//NUMEROS MENORES QUE 2147483648
 		b=870.2311;//
-		fp_X = int2IEE754(a);
+
+		
+		fp_X = int2IEE754(a); //Le mete valor 
 		$display("FPX: 0x%h, valor=%f",fp_X,a);
 		fp_Y =int2IEE754(b);
 		$display("FPY: 0x%h, valor=%f\n",fp_Y,b);
@@ -70,6 +72,17 @@ module tb_top;
 
 
 
+
+
+
+
+
+
+
+
+
+
+// -----------------EMPIEZAN FUNCIONES------------------------------------
 	int parte_entera;
 	int aux;
 	//int dec[$];
