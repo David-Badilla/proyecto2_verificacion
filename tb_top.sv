@@ -29,7 +29,7 @@ module tb_top;
 	
 	initial begin
 		clk=0;
-		r_mode=1;
+		r_mode=0;
 		fp_X=0;
 		fp_Y=0;
 				
@@ -42,27 +42,52 @@ module tb_top;
 	always #2 clk=~clk;
 	real salida;
 	real a;
+	real valorX;
+	real valorY;
 	real b;
 	bit [31:0] c;
-	real esperado;
+	bit [31:0] esperadoIEEE;
+	real esperadoreal;
+	
 	always@(posedge clk)begin
+	for (int i=0;i<20;i++) begin
+		a=$urandom_range(50000,1000);;//NUMEROS MENORES QUE 2147483648
+		a=a/1000;
+		if($urandom_range(1)==1) a=-a;		
 
-		a=-8010.2121;//NUMEROS MENORES QUE 2147483648
-		b=870.2311;//
-
+		b=$urandom_range(50000,1000);//
+		b=b/1000;
+		if($urandom_range(1)==1) b=-b;		
 		
-		fp_X = int2IEE754(a); //Le mete valor 
-		$display("FPX: 0x%h, valor=%f",fp_X,a);
+		fp_X = int2IEE754(a); //Le mete valor
+		valorX = IEE7542int(fp_X); // VALOR REAL ENTRANTE AL MULTIPLICADOR ya que al convertir a punto flotante es posible que algunos decimales se pierdan por eso esta funcion devuelve en decimal lo que se convirtió para saber exactamente lo que entró en X
+		 
+		$display("FPX: 0x%h, a=%f , Valor real al convertir IEEE754 X: %f",fp_X,a,valorX);
 		fp_Y =int2IEE754(b);
-		$display("FPY: 0x%h, valor=%f\n",fp_Y,b);
-		esperado=a*b;
-		$display("\nRESULTADO ESPERADO: %f , %h conv iee dec %f",esperado,int2IEE754(esperado), IEE7542int(int2IEE754(esperado)));
+		valorY = IEE7542int(fp_Y); 
+
+		$display("FPY: 0x%h, valor=%f Valor real al convertir IEEE754 Y: %f\n",fp_Y,b,valorY);
+		esperadoIEEE=int2IEE754(valorX*valorY); //Convierte los valores en IEEE para saber que decimales se pierden al convertir la mantisa
+		esperadoreal=IEE7542int(esperadoIEEE); // Regresa a formato decimal para saber en verdad que se debe ver en la salida
+		//$display("RESULTADO ESPERADO: %f ,IEEE %h",esperadoreal,esperadoIEEE);
 		#100
 		salida=IEE7542int(fp_Z);
-		$display("	RESULTADO fp_Z: 0x%h  decimal:%f  \n\n",fp_Z,salida,);
+		//$display("	RESULTADO SALIDA fp_Z: 0x%h  decimal:%f ",fp_Z,salida,);
+		
+
+		//CHECKER
+		if(esperadoreal==salida) $display("--------PASS: los resultados coinciden Esperado:normal %f %f Recibido:%f--------------\n\n\n",valorX*valorY,esperadoreal,salida);
+		else  $display("*******ERROR: los resultados NO coinciden Esperado:normal %f %f Recibido:%f**************",valorX*valorY,esperadoreal,salida);
+		
+		
 		if (ovrf)$display("**OVERFLOW**");
 		if (udrf)$display("**UNDERFLOW**");
-		//$display("Entradas x=%g y=%g == %g",fp_X,fp_Y,fp_Z);
+		$display("\n\n\n\n");
+
+	end
+
+
+		
 		$finish;
 	end
 
@@ -122,7 +147,7 @@ module tb_top;
 			if (num<0)num=-num;
 		end
 	//foreach(arreglo[i])begin	
-		//$display("arreglo[%g] : %g ",i,arreglo[i]);
+	///	$display("arreglo[%g] : %g ",i,arreglo[i]);
 	//end
 	temporal=parte_entera;
 	exp=0;
@@ -149,13 +174,9 @@ module tb_top;
 		while(temporal[31]!=1)begin //algoritmo para acomodar la parte entera y la decimal juntas hasta que haya un 1 en el bit 24
 			temporal = temporal << 1;
 			temporal[0]=arreglo[contador];
-			//$display("DEC[CONT]:",dec[contador]);
 			if (arreglo[contador]==1)empezar=1;
 			if(!empezar) exp-=1;			
 			contador+=1;
-		
-			
-
 		end
 		//$display("TEMPORAL: %b",temporal);
 	end
@@ -164,7 +185,7 @@ module tb_top;
 	//$display("\nExponente = %d",exp);
 	exponente=exp+127; //Suma 127 de acuerdo al formato
 	mantisa=temporal[30:8]; //Iguala mantisa de 23 bits con temporal de 24 bits para eliminar el primer bit como dice el formato
-	
+	//$display("Exponente:%g temporal: %b \nMantisa: %b",exponente-127,temporal,mantisa);
 	IEEE={signo,exponente,mantisa};//Concatena todo
 	//$display("\nFORMATO IEE = %h \n",IEEE);
 	return IEEE;
