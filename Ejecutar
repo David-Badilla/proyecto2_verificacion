@@ -1,5 +1,5 @@
 source /mnt/vol_NFS_rh003/estudiantes/archivos_config/synopsys_tools.sh
-rm -rf salida* csrc ucli.key vc_hdrs.h csrc/ log_test novas.conf ucli.key vc_hdrs.h verdiLog/
+rm -rf salida* csrc ucli.key vc_hdrs.h csrc/ log_test novas.conf ucli.key vc_hdrs.h verdiLog/ inter.fsdb novas_dump.log novas.rc verdi_config_file
 
 vcs -Mupdate tb_top.sv -o salida -full64 -debug_acc+all -debug_region+cell+encrypt -sverilog -l log_test -ntb_opts uvm +lint=TFIPC-L -cm line+tgl+cond+fsm+branch+assert -kdb;
 

@@ -45,10 +45,13 @@ module tb_top;
 	real valorX;
 	real valorY;
 	real b;
-	bit [31:0] c;
+	bit [34:0] a0;
+	bit [34:0] b0;
+	bit [34:0] c;
 	bit [31:0] esperadoIEEE;
 	real esperadoreal;
-	
+	bit Round_bit, guard, sticky;
+
 	always@(posedge clk)begin
 	for (int i=0;i<20;i++) begin
 		a=$urandom_range(50000,1000);;//NUMEROS MENORES QUE 2147483648
@@ -59,19 +62,28 @@ module tb_top;
 		b=b/1000;
 		if($urandom_range(1)==1) b=-b;		
 		
-		fp_X = int2IEE754(a); //Le mete valor
-		valorX = IEE7542int(fp_X); // VALOR REAL ENTRANTE AL MULTIPLICADOR ya que al convertir a punto flotante es posible que algunos decimales se pierdan por eso esta funcion devuelve en decimal lo que se convirtió para saber exactamente lo que entró en X
+		a0 = Int_IEEE(a); //Le mete valor
+		fp_X = a0[34:3];
+		valorX = IEEE_Int(fp_X); // VALOR REAL ENTRANTE AL MULTIPLICADOR ya que al convertir a punto flotante es posible que algunos decimales se pierdan por eso esta funcion devuelve en decimal lo que se convirtió para saber exactamente lo que entró en X
 		 
-		$display("FPX: 0x%h, a=%f , Valor real al convertir IEEE754 X: %f",fp_X,a,valorX);
-		fp_Y =int2IEE754(b);
-		valorY = IEE7542int(fp_Y); 
-
-		$display("FPY: 0x%h, valor=%f Valor real al convertir IEEE754 Y: %f\n",fp_Y,b,valorY);
-		esperadoIEEE=int2IEE754(valorX*valorY); //Convierte los valores en IEEE para saber que decimales se pierden al convertir la mantisa
-		esperadoreal=IEE7542int(esperadoIEEE); // Regresa a formato decimal para saber en verdad que se debe ver en la salida
-		//$display("RESULTADO ESPERADO: %f ,IEEE %h",esperadoreal,esperadoIEEE);
+		$display("FPX: a= %f, 0x%h, Valor al convertir IEEE754 X: %f",a,fp_X,valorX);
+		b0 =Int_IEEE(b);
+		fp_Y = b0[34:3];
+		valorY = IEEE_Int(fp_Y); 
+		
+		$display("FPY: valor= %f 0x%h, Valor al convertir IEEE754 Y: %f\n",b,fp_Y,valorY);
+		c=Int_IEEE(valorX*valorY); //Convierte los valores en IEEE para saber que decimales se pierden al convertir la mantisa
+		Round_bit = c[2];
+		guard = c[1];
+		sticky = c[0];
+		esperadoIEEE = c[34:3];
+		esperadoreal=IEEE_Int(esperadoIEEE); // Regresa a formato decimal para saber en verdad que se debe ver en la salida
+		$display("RESULTADO ESPERADO: %f ,IEEE %h , Round %b Guard %b sticky %b",esperadoreal,esperadoIEEE, Round_bit,guard ,sticky);
 		#100
-		salida=IEE7542int(fp_Z);
+		
+
+		//MONITOR
+		salida=IEEE_Int(fp_Z);
 		//$display("	RESULTADO SALIDA fp_Z: 0x%h  decimal:%f ",fp_Z,salida,);
 		
 
@@ -112,16 +124,16 @@ module tb_top;
 	int aux;
 	//int dec[$];
 	bit [31:0] temporal;
-	bit [22:0] mantisa;
+	bit [25:0] mantisa;
 	int contador;
 	bit [7:0] exponente;
 	int exp;
 	bit empezar;
 	bit signo;
-	bit [31:0]IEEE;
+	bit [34:0]IEEE;
 	int in;
 	bit arreglo [];
-	function [31:0]int2IEE754(real num); //CONVIERTE UN NUMERO A FORMATO IEEE754
+	function [34:0]Int_IEEE(real num); //CONVIERTE UN NUMERO A FORMATO IEEE754
 		//$display("RECIBIDO: %f",num);
 		if(num<0)begin //Revisa signo
 			signo=1;
@@ -184,7 +196,7 @@ module tb_top;
 	exp-=1;//resta 1 para no contar el primer bit
 	//$display("\nExponente = %d",exp);
 	exponente=exp+127; //Suma 127 de acuerdo al formato
-	mantisa=temporal[30:8]; //Iguala mantisa de 23 bits con temporal de 24 bits para eliminar el primer bit como dice el formato
+	mantisa=temporal[30:5]; //Iguala mantisa de 23 bits con temporal de 24 bits para eliminar el primer bit como dice el formato
 	//$display("Exponente:%g temporal: %b \nMantisa: %b",exponente-127,temporal,mantisa);
 	IEEE={signo,exponente,mantisa};//Concatena todo
 	//$display("\nFORMATO IEE = %h \n",IEEE);
@@ -199,7 +211,7 @@ module tb_top;
 	int auxi;
 	real fraccion;
 	real peso_decimal;
-	function real IEE7542int(bit [31:0] iee); //funcion para convertir del formato IE745 a decimal
+	function real IEEE_Int(bit [31:0] iee); //funcion para convertir del formato IE745 a decimal
 		expone= iee[30:23];
 		expone-=127;
 		//$display("\nExponente = %d",expone);
