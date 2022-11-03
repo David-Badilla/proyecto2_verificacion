@@ -7,6 +7,9 @@ class my_seq_item extends uvm_sequence_item;
 	constraint redond {r_mode inside{[0:5]};}
 
 	bit[31:0] Z;
+	bit[31:0] Zteorica;
+	bit Round_bit, guardORsticky;
+	bit pass;
 	bit ovrf,udrf;
 
 	function new (string name = "my_seq_item");
