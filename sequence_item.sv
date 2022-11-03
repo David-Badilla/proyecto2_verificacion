@@ -23,21 +23,24 @@ class my_seq_item extends uvm_sequence_item;
 		return $sformatf("X=%h ,Y=%h, out=%h R_mode=%g",X,Y,Z,r_mode);
 	endfunction 
 
-
+	//Variables para X
 	rand bit sig;
 	bit [7:0] ex;
 	rand bit [22:0] manti;
 
+	//Variables para Y
 	rand bit sig1;
 	bit [7:0] ex1;
-	rand int e1,e2;
-	constraint en {e1 inside{[-8:8]};e2 inside{[-8:8]};}
-
 	rand bit [22:0] manti1;
+
 	
+	rand int e1,e2;
+	constraint en {e1 inside{[-8:15]};e2 inside{[-8:15]};}
+
+
+	//Funcion para darle valores a X Y aleatorios en formato IEEE
 	function void post_randomize();
 		ex=e1+127;
-		//$display("		EXPONENTE: %b ,%d",ex,ex);
 		ex1=e2+127;
 		X = {sig,ex,manti};
 		Y = {sig1,ex1,manti1};

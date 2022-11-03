@@ -94,7 +94,8 @@ class my_scoreboard extends uvm_scoreboard;
 		//foreach(scoreboard[i]) $display (scoreboard[i]);
 
 
-		tamano_sb=this.scoreboard.size();
+		tamano_sb=scoreboard.size();
+		$display("\n		CANTIDAD DE TRANSACCIONES : %g",tamano_sb);
 		f = $fopen("output.csv", "w");
 		$fwrite(f, "	X  , 	 Y,  		Z, 	  Z teorica ,	R_mode , Round_bit, Guard|Sticky , PASS , ovrf , udrf \n");
 		for (int i=0;i<tamano_sb;i++)begin

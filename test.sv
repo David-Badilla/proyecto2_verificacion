@@ -33,7 +33,7 @@ class base_test extends uvm_test;
 		
 		seq.randomize();
 		seq.start(e0.a0.s0);
-		#200;
+		#2000;
 		phase.drop_objection(this);
 
 	endtask
@@ -57,7 +57,7 @@ class test_multi extends base_test;
 	endfunction
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		seq.randomize() with {num inside {[1:2]};};
+		seq.randomize() with {num inside {[10:200]};};
 	endfunction
 
 endclass
