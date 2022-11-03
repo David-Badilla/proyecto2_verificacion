@@ -14,7 +14,7 @@ class my_sequence extends uvm_sequence;
 		my_seq_item m_item = my_seq_item::type_id::create("m_item");
 
 		start_item(m_item);
-		m_item.randomize();	
+		m_item.randomize();
 		//m_item.post_randomize();
 		`uvm_info("SEQ",$sformatf("Generado item: %s", m_item.convert2string()), UVM_HIGH )	//Imprimir 
 		finish_item(m_item);

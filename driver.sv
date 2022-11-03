@@ -22,7 +22,8 @@ class my_driver extends uvm_driver #(my_seq_item);
 		`uvm_info("DRV",$sformatf("Esperando item de sequencer"),UVM_LOW)
 		
 		seq_item_port.get_next_item(m_item);
-		`uvm_info("DRV",$sformatf("Item recibido"),UVM_MEDIUM)
+		`uvm_info("DRV",$sformatf("Item recibido\n"),UVM_MEDIUM)
+		m_item.convert2string();
 		drive_item(m_item);
 			
 		seq_item_port.item_done();
@@ -36,7 +37,8 @@ class my_driver extends uvm_driver #(my_seq_item);
 
 		vif.cb.r_mode <= m_item.r_mode;
 		vif.cb.fp_X <= m_item.X;
-		vif.cb.fp_Y <= m_item.X;
+		vif.cb.fp_Y <= m_item.Y;
+	
 
 	endtask
 endclass

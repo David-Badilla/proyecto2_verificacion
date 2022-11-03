@@ -16,12 +16,12 @@ class my_monitor extends uvm_monitor;
 		mon_analysis_port = new ("mon_analysis_port",this);
 	endfunction
 
-	bit a=1;
+
 	virtual task run_phase(uvm_phase phase);
 		super.run_phase(phase);
         forever begin		
            @(vif.cb);
-			if (a==1) begin
+			if (!vif.reset) begin
 				my_seq_item item = my_seq_item::type_id::create("item");
 				item.X = vif.fp_X;
 				item.Y = vif.fp_Y;

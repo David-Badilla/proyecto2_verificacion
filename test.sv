@@ -28,6 +28,8 @@ class base_test extends uvm_test;
 		
 		phase.raise_objection(this);
 		//apply_reset();
+		vif.reset=0;
+		
 		
 		seq.randomize();
 		seq.start(e0.a0.s0);
@@ -39,10 +41,10 @@ class base_test extends uvm_test;
 
 
 	virtual task apply_reset();
-		//vif.reset <= 1;
-		repeat(5) @(posedge vif.clk);
-		//vif.reset <=0;
-		repeat(10) @(posedge vif.clk);
+		vif.reset <= 1;
+		repeat(2) @(posedge vif.clk);
+		vif.reset <=0;
+		repeat(3) @(posedge vif.clk);
 	endtask
 
 
@@ -55,7 +57,7 @@ class test_multi extends base_test;
 	endfunction
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		seq.randomize() with {num inside {[300:500]};};
+		seq.randomize() with {num inside {[1:2]};};
 	endfunction
 
 endclass

@@ -94,6 +94,11 @@ module tb_top;
 		
 		if (ovrf)$display("**OVERFLOW**");
 		if (udrf)$display("**UNDERFLOW**");
+
+		a=0;
+		$display("		PRUEBA:0 = %f",Int_IEEE(a));
+
+ 
 		$display("\n\n\n\n");
 
 	end
@@ -135,6 +140,7 @@ module tb_top;
 	bit arreglo [];
 	function [34:0]Int_IEEE(real num); //CONVIERTE UN NUMERO A FORMATO IEEE754
 		//$display("RECIBIDO: %f",num);
+	if (num!=0)begin
 		if(num<0)begin //Revisa signo
 			signo=1;
 			num=-num;
@@ -200,6 +206,12 @@ module tb_top;
 	//$display("Exponente:%g temporal: %b \nMantisa: %b",exponente-127,temporal,mantisa);
 	IEEE={signo,exponente,mantisa};//Concatena todo
 	//$display("\nFORMATO IEE = %h \n",IEEE);
+	
+	end else begin
+
+	IEEE=0;
+	end
+
 	return IEEE;
 
 	endfunction
