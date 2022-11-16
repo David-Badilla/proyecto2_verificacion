@@ -59,146 +59,110 @@ endmodule
 
 
 
-	real entero;
-	bit [31:0]par_ent;
-	int expone;
-	int auxi;
-	real fraccion;
-	real peso_decimal;
-	function real IEEE_Int(bit [31:0] iee); //funcion para convertir del formato IE745 a decimal
-	if(iee!=0)begin
-		expone= iee[30:23];
-		expone-=127;
-		//$display("\nExponente = %d",expone);
-		
-		par_ent=0;
-		if(expone>0)par_ent[0]=1;
-		//$display ("Expone %g",expone);
-		if(expone>=0)begin
-			for(int i=0;i<expone;i++)begin
-				par_ent=par_ent<<1;
-				par_ent[0]=iee[22-i];	
-			end
-		end
-		entero=par_ent;
-		//$display("\nEntero = %f %0b",entero, entero);
 
-		auxi=1;
-		fraccion=0;
-		if (expone>0)begin
-			for(int j=(22-expone);j>=0;j--)begin
-				peso_decimal=2**auxi;
-				fraccion+=iee[j]*(1/peso_decimal);
-				auxi+=1;
-			end
-		end else begin	
-			peso_decimal=2**(-expone);
-			fraccion+=(1/peso_decimal) ;
-			for(int j=(22);j>=0;j--)begin
-				peso_decimal=2**-(expone-auxi);
-				fraccion+=iee[j]*((1/(peso_decimal) ));
-				auxi+=1;
-			end
-
-		end
-		//$display("\nFraccion = %f",fraccion);
-		entero+=fraccion;
-		if(iee[31])entero=-entero;
-		
-		//$display("\nSALIDA = %f",entero);
-		end else entero=0;
-		return entero;
-	endfunction
-
-
-int parte_entera;
-	int aux;
-	//int dec[$];
-	bit [31:0] temporal;
-	bit [25:0] mantisa;
-	int contador;
-	bit [7:0] exponente;
-	int exp;
-	bit empezar;
-	bit signo;
-	bit [34:0]IEEE;
-	int in;
-	bit arreglo [];
+bit [7:0] exp1,exp2;
+bit [46:0] mant1;
+bit [23:0] mant2;
+bit [25:0] mantnueva;
+bit sig;
+bit [46:0] resultado;
+int espacios;
+int cont;
+bit ini;
+bit [7:0] expfinal;
+int of1,of2,aux1,aux2,corte,u;
+bit [34:0]res;
+function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
+	sig=num1[31]^num2[31];
+	exp1=num1[30:23];
+	exp2=num2[30:23];
 	
-function [34:0]Int_IEEE(real num); //CONVIERTE UN NUMERO A FORMATO IEEE754
-		//$display("RECIBIDO: %f",num);
-	if (num!=0)begin
-		if(num<0)begin //Revisa signo
-			signo=1;
-			num=-num;
-		end else signo=0;
-
-		parte_entera= $rtoi(num);//trunca la parte entera sin redondear
-		num = num-parte_entera; //deja solo la parte decimal para iniciar algorimo
-		if (num<0)num=-num; //Convierte siempre el numero a positivo
-	
-		in=0;
-		arreglo=new[100];//Genera arreglo para almacenar los bits de la parte decimal
-		foreach(arreglo[i]) arreglo[i]=0;
-		while(num!=0)begin //Algoritmo conversor decimal binario
-			
-			num=num*2;
-			aux= $rtoi(num);
-			
-			if (aux==1) num=num-aux;//resta parte entera
-			arreglo[in]=aux;
-			//$display("DEC[%g] %g  aux %g",in,dec[0],aux);
-			in+=1;
-			if (num<0)num=-num;
+	mant1={1'b1,num1[22:0]};
+	mant2={1'b1,num2[22:0]};
+	if ((num1[22:0]==0 & exp1==0)|(num2[22:0]==0 & exp2==0)) return 0; 
+	aux1=0;
+	if (mant1!=0)begin
+		while(mant1[0]!=1) begin
+			mant1=mant1>>1;
+			aux1+=1;
 		end
-	//foreach(arreglo[i])begin	
-	///	$display("arreglo[%g] : %g ",i,arreglo[i]);
-	//end
-	temporal=parte_entera;
-	exp=0;
-	empezar=0;
-	//$display("PARTE ENTERA: %g",parte_entera);
-	if(parte_entera!=0)begin	
-		for (int i=31;i>=0;i--)begin//Cuenta la cantidad de bits que necesita la parte entera para calcular el exponente
-			if(temporal[i]==1) empezar=1;
-			if(empezar==1) exp+=1;
+	end
+	aux1=23-aux1;
+	aux2=0;
+	//$display("		aux1= %g",aux1);
+	if (mant2!=0)begin
+		while(mant2[0]!=1) begin
+			mant2=mant2>>1;
+			aux2+=1;
 		end
 	end
 	
+	aux2=23-aux2;
+	//$display("		aux2= %g",aux2);
+	corte=aux1+aux2;
+	resultado = 0;
+	espacios=0;
 	
-	contador=0;
-	if (parte_entera!=0)begin
-		while(temporal[31]!=1)begin //algoritmo para acomodar la parte entera y la decimal juntas hasta que haya un 1 en el bit 24
-			temporal = temporal << 1;
-			temporal[0]=arreglo[contador];
-			contador+=1;
+	//$display("mant1 %b",mant1);
+	for (int i=0;i<=24;i++)begin	
+		if(mant2[0]==0)begin 
+			espacios+=1;
+			mant2=mant2>>1;
+			//$display("mant2:%b",mant2);	
+			//$display("		Cero");
+		end else begin
+			//$display("Res: %b \n+    %b\n",resultado,mant1<<espacios);
+			resultado+=mant1<<espacios;
+			mant2=mant2>>1;
+			//$display("mant2:%b\n",mant2);
+			espacios+=1;
 		end
-	end else begin	
-		exp=0;
-		empezar=0;
-		while(temporal[31]!=1)begin //algoritmo para acomodar la parte entera y la decimal juntas hasta que haya un 1 en el bit 24
-			temporal = temporal << 1;
-			temporal[0]=arreglo[contador];
-			if (arreglo[contador]==1)empezar=1;
-			if(!empezar) exp-=1;			
-			contador+=1;
+	end
+	//$display("\n		RESULTADO : %b\n",resultado); 
+	cont=0;
+	ini=0;
+	//if(resultado[45:32]!=0)begin
+//	$display("	resultado[45:32]!=0 : %b",resultado[45:32]);
+	for (int j=46;j>=corte;j--)begin
+		if (resultado[j]==1)ini=1;
+		if (ini) cont+=1;
+	end
+	cont-=1;
+	if(ini==0) begin	
+		cont=0;
+		for(int k=corte-1;k>=0;k--)begin
+			if(resultado[k]!=1) cont+=1;
+			else break;
 		end
-		//$display("TEMPORAL: %b",temporal);
+		//cont-=1;
+		cont=-cont;
+
 	end
 
-	exp-=1;//resta 1 para no contar el primer bit
-	//$display("\nExponente = %d",exp);
-	exponente=exp+127; //Suma 127 de acuerdo al formato
-	mantisa=temporal[30:5]; //Iguala mantisa de 23 bits con temporal de 24 bits para eliminar el primer bit como dice el formato
-	//$display("Exponente:%g temporal: %b \nMantisa: %b",exponente-127,temporal,mantisa);
-	IEEE={signo,exponente,mantisa};//Concatena todo
-	//$display("\nFORMATO IEE = %h \n",IEEE);
+	//$display("		EXP: %g\n",cont);
+
+	expfinal=(exp1-127)+(exp2-127)+cont+127;
+	//$display("		EXPfinal: %b  %g\n",expfinal,expfinal);
+	of1=corte-1+cont;
+	//$display("		ofset: %g",of1);
+	of2=31+cont-8;
+	//if (cont!=0)begin
+		u=46;
+		mantnueva=0;
+		while(mantnueva[25]!=1)begin
+			mantnueva=mantnueva<<1;
+			mantnueva[0]=resultado[u];
+			u-=1;
+		end
+		mantnueva=mantnueva<<1;
+		mantnueva[0]=resultado[u];
+
+
 	
-	end else begin
+	res={sig,expfinal,mantnueva};
+//	$display ("		salida: %b , rbit: %b , guard: %b , stic: %b \nhex: %h	",res[34:3],res[2],res[1],res[0],res[34:3]);
+	return res;
 
-	IEEE=0;
-	end
+endfunction 
 
-	return IEEE;
 
-	endfunction

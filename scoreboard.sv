@@ -24,13 +24,13 @@ class my_scoreboard extends uvm_scoreboard;
 			
 		
 		//Convierte las entradas a numeros reales para multiplicarlos
-		a=IEEE_Int(item.X);
-		b=IEEE_Int(item.Y);
+		//a=IEEE_Int(item.X);
+	//	b=IEEE_Int(item.Y);
 
-		esperadoreal=a*b; 
+//		esperadoreal=a*b; 
 		//Convierte ese valor teorico a formato IEEE para hacer las comparaciones
-		c=Int_IEEE(esperadoreal);
-		esperadoIEEE=c[34:3];
+		c=Multi(item.X,item.Y);
+		esperadoIEEE=c[34:3];		
 		Round_bit = c[2];
 		guard = c[1];
 		sticky = c[0];
@@ -64,8 +64,8 @@ class my_scoreboard extends uvm_scoreboard;
 		item.guardORsticky = guard|sticky;
 
 		//Convierte los valores de salida a reales solo para informacion
-		salidateorica=IEEE_Int(esperadoIEEE);	
-		z=IEEE_Int(item.Z);
+		salidateorica=0;	
+		z=0;
 		
 		//Se hace la comparacion entre el valor en formato IEEE recibido con el esperado calculado anteriormente
 		if (item.Z==esperadoIEEE)begin
@@ -89,6 +89,8 @@ class my_scoreboard extends uvm_scoreboard;
 
 	integer f;
 	int tamano_sb;
+
+	bit [31:0] mul,mul2;
 	virtual function void report_phase(uvm_phase phase);
 		super.build_phase(phase);
 		//foreach(scoreboard[i]) $display (scoreboard[i]);
@@ -114,7 +116,6 @@ class my_scoreboard extends uvm_scoreboard;
 				item.ovrf ,
 				item.udrf);
 		end
-
 
 
 

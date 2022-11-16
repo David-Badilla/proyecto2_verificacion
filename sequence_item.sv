@@ -25,26 +25,20 @@ class my_seq_item extends uvm_sequence_item;
 
 	//Variables para X
 	rand bit sig;
-	bit [7:0] ex;
+	rand bit [7:0] ex;
 	rand bit [22:0] manti;
 
 	//Variables para Y
 	rand bit sig1;
-	bit [7:0] ex1;
+	rand bit [7:0] ex1;
 	rand bit [22:0] manti1;
 
-	
-	rand int e1,e2;
-	constraint en {e1 inside{[-8:15]};e2 inside{[-8:15]};}
 
 
 	//Funcion para darle valores a X Y aleatorios en formato IEEE
 	function void post_randomize();
-		ex=e1+127;
-		ex1=e2+127;
 		X = {sig,ex,manti};
 		Y = {sig1,ex1,manti1};
-		//$display("		GENERADO		X=%h = %f, Y=%h = %f",X,IEEE_Int(X),Y,IEEE_Int(Y));
 	endfunction
 	
 
