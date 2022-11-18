@@ -60,17 +60,19 @@ endmodule
 
 
 
+
+
 bit [7:0] exp1,exp2;
 bit [46:0] mant1;
 bit [23:0] mant2;
 bit [25:0] mantnueva;
 bit sig;
-bit [46:0] resultado;
+bit [47:0] resultado;
 int espacios;
 int cont;
 bit ini;
 bit [7:0] expfinal;
-int of1,of2,aux1,aux2,corte,u;
+int of1,of2,aux1,aux2,corte,u,expfi;
 bit [34:0]res;
 function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 	sig=num1[31]^num2[31];
@@ -104,6 +106,7 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 	espacios=0;
 	
 	//$display("mant1 %b",mant1);
+	//$display("mant2 %b",mant2);
 	for (int i=0;i<=24;i++)begin	
 		if(mant2[0]==0)begin 
 			espacios+=1;
@@ -123,7 +126,7 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 	ini=0;
 	//if(resultado[45:32]!=0)begin
 //	$display("	resultado[45:32]!=0 : %b",resultado[45:32]);
-	for (int j=46;j>=corte;j--)begin
+	for (int j=47;j>=corte;j--)begin
 		if (resultado[j]==1)ini=1;
 		if (ini) cont+=1;
 	end
@@ -141,14 +144,30 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 
 	//$display("		EXP: %g\n",cont);
 
-	expfinal=(exp1-127)+(exp2-127)+cont+127;
-	//$display("		EXPfinal: %b  %g\n",expfinal,expfinal);
+	
+	of1=exp1-127;
+	of2=exp2-127;
+	expfi=of1+of2+cont+127;
+	//$display("		EXP1: %g  EXP2: %g\n",of1,of2);
+	//$display("		EXPfinal: %b  %g\n",expfi,expfi);
 	of1=corte-1+cont;
 	//$display("		ofset: %g",of1);
 	of2=31+cont-8;
 	//if (cont!=0)begin
-		u=46;
+		
 		mantnueva=0;
+		
+		if (expfi>=255)begin
+			$display("		OVRFLOW: %g\n",expfi);
+			return {sig,8'b11111111,mantnueva};
+		end
+		if (expfi<0) begin
+			$display("		UNDRFLOW: %g\n",expfi);
+			return {sig,8'b00000000,mantnueva};
+
+		end
+
+		u=47;
 		while(mantnueva[25]!=1)begin
 			mantnueva=mantnueva<<1;
 			mantnueva[0]=resultado[u];
@@ -158,9 +177,9 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 		mantnueva[0]=resultado[u];
 
 
-	
+	expfinal=expfi;
 	res={sig,expfinal,mantnueva};
-//	$display ("		salida: %b , rbit: %b , guard: %b , stic: %b \nhex: %h	",res[34:3],res[2],res[1],res[0],res[34:3]);
+	$display ("		salida: %b , rbit: %b , guard: %b , stic: %b \nhex: %h	",res[34:3],res[2],res[1],res[0],res[34:3]);
 	return res;
 
 endfunction 

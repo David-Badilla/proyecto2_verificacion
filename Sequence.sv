@@ -6,8 +6,9 @@ class my_sequence extends uvm_sequence;
 	endfunction
 	
 	rand int num;
+	int round;
 
-	constraint c1{soft num inside{[10:468]} ;}
+	constraint c1{soft num inside{[10:200]} ;}
 	
 	virtual task body();
 	for (int i=0;i<num;i++)begin
@@ -15,7 +16,7 @@ class my_sequence extends uvm_sequence;
 
 		start_item(m_item);
 		m_item.randomize();
-		//m_item.post_randomize();
+		m_item.r_mode=round;
 		`uvm_info("SEQ",$sformatf("Generado item: %s", m_item.convert2string()), UVM_HIGH )	//Imprimir 
 		finish_item(m_item);
 	end

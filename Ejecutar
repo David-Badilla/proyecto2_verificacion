@@ -4,11 +4,94 @@ source /mnt/vol_NFS_rh003/estudiantes/archivos_config/synopsys_tools.sh
 
 vcs -Mupdate test_bench.sv -o salida -full64 -debug_acc+all -debug_region+cell+encrypt -sverilog -l log_test -ntb_opts uvm +lint=TFIPC-L -cm line+tgl+cond+fsm+branch+assert -kdb;
 
-#vcs -Mupdate tb_top.sv -o salida -full64 -debug_acc+all -debug_region+cell+encrypt -sverilog -l log_test -ntb_opts uvm +lint=TFIPC-L -cm line+tgl+cond+fsm+branch+assert -kdb;
+#Borra todo lo de las carpetas para almacenar los csv
+rm CSV_salidas/r_mode_0/*
+rm CSV_salidas/r_mode_1/*
+rm CSV_salidas/r_mode_2/*
+rm CSV_salidas/r_mode_3/*
+rm CSV_salidas/r_mode_4/*
+
+#--------------------TEST_R_MODE_0-----------------------------------------------------
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=1 #-gui
+mv output.csv CSV_salidas/r_mode_0/seed_1.csv  #MUEVE Y CAMBIA EL NOMBRE
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=5 #-gui
+mv output.csv CSV_salidas/r_mode_0/seed_5.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=9 #-gui
+mv output.csv CSV_salidas/r_mode_0/seed_9.csv
 
 
-#./salida 
-./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_multi +ntb_random_seed=1 #-gui
+#--------------------TEST_R_MODE_1-----------------------------------------------------
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_1 +ntb_random_seed=10 #-gui
+mv output.csv CSV_salidas/r_mode_1/seed_10.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_1 +ntb_random_seed=13 #-gui
+mv output.csv CSV_salidas/r_mode_1/seed_13.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_1 +ntb_random_seed=15 #-gui
+mv output.csv CSV_salidas/r_mode_1/seed_15.csv
+
+#--------------------TEST_R_MODE_2-----------------------------------------------------
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_2 +ntb_random_seed=24 #-gui
+mv output.csv CSV_salidas/r_mode_2/seed_24.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_2 +ntb_random_seed=26 #-gui
+mv output.csv CSV_salidas/r_mode_2/seed_26.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_2 +ntb_random_seed=21 #-gui
+mv output.csv CSV_salidas/r_mode_2/seed_21.csv
+
+
+#--------------------TEST_R_MODE_3-----------------------------------------------------
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_3 +ntb_random_seed=31 #-gui
+mv output.csv CSV_salidas/r_mode_3/seed_31.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_3 +ntb_random_seed=37 #-gui
+mv output.csv CSV_salidas/r_mode_3/seed_37.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_3 +ntb_random_seed=39 #-gui
+mv output.csv CSV_salidas/r_mode_3/seed_39.csv
+
+#--------------------TEST_R_MODE_4-----------------------------------------------------
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_4 +ntb_random_seed=41 #-gui
+mv output.csv CSV_salidas/r_mode_4/seed_41.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_4 +ntb_random_seed=44 #-gui
+mv output.csv CSV_salidas/r_mode_4/seed_44.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_4 +ntb_random_seed=46 #-gui
+mv output.csv CSV_salidas/r_mode_4/seed_46.csv
+
+
+
+
+
+
+rm -rf salida* csrc ucli.key vc_hdrs.h csrc/ log_test novas.conf ucli.key vc_hdrs.h verdiLog/ inter.fsdb novas_dump.log novas.rc verdi_config_file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ./salida +UVM_VERBOSITY=UVM_HIGH +UVM_TESTNAME=test_1011 +ntb_random_seed=2 > deleteme_log_2
 
 

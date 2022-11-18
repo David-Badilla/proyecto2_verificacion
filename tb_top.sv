@@ -54,8 +54,8 @@ module tb_top;
 	bit [31:0] mul,mul2;
 	always@(posedge clk)begin
 
-		mul =32'h3ebcf889;//5.5
-		mul2=32'h4529fd17;//-2.25
+		mul =32'hf2a37f9e;//5.5
+		mul2=32'h6f18da51;//-2.25
 		c=Multi(mul,mul2);
 		esperadoIEEE=c[34:3];
 		$display("\n\n 		Multi:: %b",esperadoIEEE);//11000001010001100000000000000000  
@@ -69,18 +69,17 @@ module tb_top;
 
 
 
-
 bit [7:0] exp1,exp2;
 bit [46:0] mant1;
 bit [23:0] mant2;
 bit [25:0] mantnueva;
 bit sig;
-bit [46:0] resultado;
+bit [47:0] resultado;
 int espacios;
 int cont;
 bit ini;
 bit [7:0] expfinal;
-int of1,of2,aux1,aux2,corte,u;
+int of1,of2,aux1,aux2,corte,u,expfi;
 bit [34:0]res;
 function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 	sig=num1[31]^num2[31];
@@ -99,7 +98,7 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 	end
 	aux1=23-aux1;
 	aux2=0;
-	$display("		aux1= %g",aux1);
+	//$display("		aux1= %g",aux1);
 	if (mant2!=0)begin
 		while(mant2[0]!=1) begin
 			mant2=mant2>>1;
@@ -108,32 +107,33 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 	end
 	
 	aux2=23-aux2;
-	$display("		aux2= %g",aux2);
+	//$display("		aux2= %g",aux2);
 	corte=aux1+aux2;
 	resultado = 0;
 	espacios=0;
-	$display("SIRVE mant2:%b",mant2);	
-	$display("mant1 %b",mant1);
+	
+	//$display("mant1 %b",mant1);
+	//$display("mant2 %b",mant2);
 	for (int i=0;i<=24;i++)begin	
 		if(mant2[0]==0)begin 
 			espacios+=1;
 			mant2=mant2>>1;
-			$display("mant2:%b",mant2);	
-			$display("		Cero");
+			//$display("mant2:%b",mant2);	
+			//$display("		Cero");
 		end else begin
-			$display("Res: %b \n+    %b\n",resultado,mant1<<espacios);
+			//$display("Res: %b \n+    %b\n",resultado,mant1<<espacios);
 			resultado+=mant1<<espacios;
 			mant2=mant2>>1;
-			$display("mant2:%b\n",mant2);
+			//$display("mant2:%b\n",mant2);
 			espacios+=1;
 		end
 	end
-	$display("\n		RESULTADO : %b\n",resultado); 
+	//$display("\n		RESULTADO : %b\n",resultado); 
 	cont=0;
 	ini=0;
 	//if(resultado[45:32]!=0)begin
 //	$display("	resultado[45:32]!=0 : %b",resultado[45:32]);
-	for (int j=46;j>=corte;j--)begin
+	for (int j=47;j>=corte;j--)begin
 		if (resultado[j]==1)ini=1;
 		if (ini) cont+=1;
 	end
@@ -149,16 +149,32 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 
 	end
 
-	$display("		EXP: %g\n",cont);
+	//$display("		EXP: %g\n",cont);
 
-	expfinal=(exp1-127)+(exp2-127)+cont+127;
-	$display("		EXPfinal: %b  %g\n",expfinal,expfinal);
+	
+	of1=exp1-127;
+	of2=exp2-127;
+	expfi=of1+of2+cont+127;
+	//$display("		EXP1: %g  EXP2: %g\n",of1,of2);
+	//$display("		EXPfinal: %b  %g\n",expfi,expfi);
 	of1=corte-1+cont;
-	$display("		ofset: %g",of1);
+	//$display("		ofset: %g",of1);
 	of2=31+cont-8;
 	//if (cont!=0)begin
-		u=46;
+		
 		mantnueva=0;
+		
+		if (expfi>=255)begin
+			$display("		OVRFLOW: %g\n",expfi);
+			return {sig,8'b11111111,mantnueva};
+		end
+		if (expfi<0) begin
+			$display("		UNDRFLOW: %g\n",expfi);
+			return {sig,8'b00000000,mantnueva};
+
+		end
+
+		u=47;
 		while(mantnueva[25]!=1)begin
 			mantnueva=mantnueva<<1;
 			mantnueva[0]=resultado[u];
@@ -166,14 +182,9 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 		end
 		mantnueva=mantnueva<<1;
 		mantnueva[0]=resultado[u];
-	/*end else begin
-		for(int u=0;u<27;u++)begin
-			mantnueva[0]=resultado[of1-u];
-			mantnueva=mantnueva<<1;
-		end
 
-	end*/
-	
+
+	expfinal=expfi;
 	res={sig,expfinal,mantnueva};
 	$display ("		salida: %b , rbit: %b , guard: %b , stic: %b \nhex: %h	",res[34:3],res[2],res[1],res[0],res[34:3]);
 	return res;
@@ -181,3 +192,4 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 endfunction 
 
 
+endmodule
