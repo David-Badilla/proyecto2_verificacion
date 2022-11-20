@@ -1,0 +1,28 @@
+
+1. Error en redondeo r_mode_0 cuando Round_bit = 1 y guard|sticky = 0 ties to even
+	Ejemplo
+
+		X  , 	 Y,  		Z, 	  Z teorica ,	R_mode , Round_bit, Guard|Sticky , PASS , ovrf , udrf 
+	b289e167, a46ea182, 1780868b, 1780868a, 	 0, 		1, 			0, 			0, 		0, 		0 
+	bbf67aa9, 9aa16ba1, 171b6ac5, 171b6ac4, 	 0, 		1, 			0, 			0, 		0, 		0 
+	c20d686b, 1e0153b6, a08edfb7, a08edfb6, 	 0, 		1, 			0, 			0, 		0, 		0 
+	d28d0d3c, 1dd16b67, b0e6c5f7, b0e6c5f6, 	 0, 		1, 			0, 			0, 		0, 		0 
+	5a3164f6, 5ee2a107, 799d0ab7, 799d0ab6, 	 0, 		1, 			0, 			0, 		0, 		0 
+	0ad45167, 3ca6e0ed, 080a6755, 080a6754, 	 0, 		1, 			0, 			0, 		0, 		0 
+	30762584, bd9eae57, ae9892c9, ae9892c8, 	 0, 		1, 			0, 			0, 		0, 		0 
+	cc59a5d3, 1fc12b10, aca43aa1, aca43aa0, 	 0, 		1, 			0, 			0, 		0, 		0 
+	89781491, 4d531494, 974c8ce5, 974c8ce4, 	 0, 		1, 			0, 			0, 		0, 		0 
+	ef321658, 0a7e69e9, ba30fbd9, ba30fbd8, 	 0, 		1, 			0, 			0, 		0, 		0 
+	a203956a, 9e67c863, 00ee45a5, 00ee45a4, 	 0, 		1, 			0, 			0, 		0, 		0 
+	b50020b2, 0dfe9e1f, 837edf29, 837edf28, 	 0, 		1, 			0, 			0, 		0, 		0 
+	bd8aaea3, c0c2a296, 3ed2e0d7, 3ed2e0d6, 	 0, 		1, 			0, 			0, 		0, 		0 
+	10c3b6de, c9fe2509, 9b424bc1, 9b424bc0, 	 0, 		1, 			0, 			0, 		0, 		0 
+
+
+2. El DUT no tiene la salida NAN
+
+
+
+3. El DUT activa la bandera de overflow cuando hay un NAN
+
+

@@ -16,6 +16,9 @@ rm CSV_salidas/r_mode_4/*
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=1 #-gui
 mv output.csv CSV_salidas/r_mode_0/seed_1.csv  #MUEVE Y CAMBIA EL NOMBRE
 
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=2 #-gui
+mv output.csv CSV_salidas/r_mode_0/seed_2.csv
+
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=5 #-gui
 mv output.csv CSV_salidas/r_mode_0/seed_5.csv
 

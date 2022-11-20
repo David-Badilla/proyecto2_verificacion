@@ -1,4 +1,5 @@
 interface dut_if (input bit clk);
+	//Inputs	
 	logic reset;
 	logic [2:0] r_mode;
 	logic [31:0] fp_X, fp_Y;

@@ -34,7 +34,7 @@ class my_driver extends uvm_driver #(my_seq_item);
 
 	virtual task drive_item(my_seq_item m_item); //task por que necesita consumir tiempo
 		@(vif.cb);
-
+		//Conexiones con los inputs del DUT
 		vif.cb.r_mode <= m_item.r_mode;
 		vif.cb.fp_X <= m_item.X;
 		vif.cb.fp_Y <= m_item.Y;

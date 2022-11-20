@@ -24,13 +24,13 @@ class my_scoreboard extends uvm_scoreboard;
 		Round_bit = c[2];
 		guard = c[1];
 		sticky = c[0];
-		udrfTeorico=0;ovrfTeorico=0;NANteorico=0;
-		
+
+		udrfTeorico=0;ovrfTeorico=0;NANteorico=0;		
 		if (esperadoIEEE==32'h80000000 | esperadoIEEE==32'h00000000) udrfTeorico=1;
 		//temp1=item.X; temp2=item.Y;
 		//if (temp1[30:23]==0 | temp2[30:23]==0) udrfTeorico=0;  	// Revisa si el cero en la salida esta dado por alguna entrada desnormalizada ""REVISAR"""
 		if (esperadoIEEE==32'hff800000 | esperadoIEEE==32'h7f800000) ovrfTeorico=1;
-		if (esperadoIEEE==32'h7fc00000) NANteorico=1;
+		if (esperadoIEEE==32'h7fc00000) NANteorico=1; //La propia funcion revisa si alguna de las entradas es NAN y devuelve ese resultados
 
 
 
@@ -111,6 +111,7 @@ class my_scoreboard extends uvm_scoreboard;
 
 		if ((num1[22:0]==0 & exp1==0)|(num2[22:0]==0 & exp2==0)|exp1==0|exp2==0) return {sig,8'b0,1'b0,25'b0}; //Revisa si las entradas son diferentes de 0
 		if ((num1[22:0]!=0 & exp1==8'b11111111)|(num2[22:0]!=0 & exp2==8'b11111111)) return {1'b0,8'b11111111,1'b1,25'b0}; //Revisa si las entradas son NOT a NUMBER (NAN)
+		if ((num1[22:0]==0 & exp1==8'b11111111)|(num2[22:0]==0 & exp2==8'b11111111)) return {sig,8'b11111111,1'b0,25'b0}; //Revisa si las entradas son INFINITO (INF)
 		//Al ser fraccionarias los ceros a la derecha se deben eliminar
 		aux1=0;
 		if (mant1!=0)begin
@@ -153,12 +154,12 @@ class my_scoreboard extends uvm_scoreboard;
 		ini=0;
 
 		//Algoritmo para calcular el exponente para normalizar el resultado en base al corte donde se debe ubicar la coma
-		for (int j=47;j>=corte;j--)begin //Para calcular exponentes positivos despues de la coma
+		for (int j=47;j>=corte;j--)begin //Para calcular exponentes positivos izquierda de la coma
 			if (resultado[j]==1)ini=1; //si detecta un 1 y activa el inicio para contar
 			if (ini) cont+=1;
 		end
 		cont-=1; 
-		if(ini==0) begin //Si no se detencto ningun 1 despues de la coma inicia la cuenta negativa
+		if(ini==0) begin //Si no se detencto ningun 1 a la izquierda de la coma inicia la cuenta negativa a la derecha
 			cont=0;
 			for(int k=corte-1;k>=0;k--)begin
 				if(resultado[k]!=1) cont+=1; //Cuenta hasta que haya un 1 
