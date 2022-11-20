@@ -24,21 +24,36 @@ class my_driver extends uvm_driver #(my_seq_item);
 		seq_item_port.get_next_item(m_item);
 		`uvm_info("DRV",$sformatf("Item recibido\n"),UVM_MEDIUM)
 		m_item.convert2string();
+		//Funcion manejo retardo
+		vif.reset=1;
+		retraso_item(m_item);
+
+		//Funcion colocar datos en la entrada
 		drive_item(m_item);
 			
 		seq_item_port.item_done();
     end    
 	endtask
-
 	
+	//Funcion de manejo de retraso simulado
+	int tiempo;
+	virtual task retraso_item(my_seq_item m_item);
+		tiempo=0;
+		while(tiempo!=m_item.retraso) begin
+			#1;
+			tiempo+=1;
+		end
+		
+	endtask
 
 	virtual task drive_item(my_seq_item m_item); //task por que necesita consumir tiempo
+		vif.reset=0; //Se usa el reset como activador de lectura para el monitor
 		@(vif.cb);
 		//Conexiones con los inputs del DUT
 		vif.cb.r_mode <= m_item.r_mode;
 		vif.cb.fp_X <= m_item.X;
 		vif.cb.fp_Y <= m_item.Y;
-	
+
 
 	endtask
 endclass

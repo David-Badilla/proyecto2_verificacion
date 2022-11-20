@@ -8,7 +8,7 @@ class my_sequence extends uvm_sequence;
 	rand int num;
 	int round;
 
-	constraint c1{soft num inside{[150:350]} ;}
+	constraint c1{soft num inside{[150:200]} ;}
 	
 	virtual task body();
 	for (int i=0;i<num;i++)begin

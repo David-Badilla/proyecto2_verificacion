@@ -25,12 +25,12 @@ class base_test extends uvm_test;
 	virtual task run_phase(uvm_phase phase);
 		
 		phase.raise_objection(this);
-		vif.reset=0;
+		vif.reset=0;	//Coloca el reset para que el monitor lea lo recibido
 		
 		
 		seq.randomize();
 		seq.start(e0.a0.s0);
-		vif.reset=1;
+		vif.reset=1;	//Coloca el reset para que el monitor no siga leyendo 
 		#4000;
 		phase.drop_objection(this);
 
@@ -46,7 +46,7 @@ class test_r_mode_0 extends base_test;
 	endfunction
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		seq.randomize() with {num inside {[10:200]};};
+		seq.randomize();
 		seq.round=0;
 	endfunction
 
@@ -59,7 +59,7 @@ class test_r_mode_1 extends base_test;
 	endfunction
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		seq.randomize() with {num inside {[10:200]};};
+		seq.randomize();
 		seq.round=1;
 	endfunction
 
@@ -72,7 +72,7 @@ class test_r_mode_2 extends base_test;
 	endfunction
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		seq.randomize() with {num inside {[10:200]};};
+		seq.randomize();
 		seq.round=2;
 	endfunction
 
@@ -85,7 +85,7 @@ class test_r_mode_3 extends base_test;
 	endfunction
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		seq.randomize() with {num inside {[10:200]};};
+		seq.randomize();
 		seq.round=3;
 	endfunction
 
@@ -98,7 +98,7 @@ class test_r_mode_4 extends base_test;
 	endfunction
 	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		seq.randomize() with {num inside {[10:200]};};
+		seq.randomize();
 		seq.round=4;
 	endfunction
 
