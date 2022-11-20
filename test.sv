@@ -30,7 +30,8 @@ class base_test extends uvm_test;
 		
 		seq.randomize();
 		seq.start(e0.a0.s0);
-		#2000;
+		vif.reset=1;
+		#4000;
 		phase.drop_objection(this);
 
 	endtask

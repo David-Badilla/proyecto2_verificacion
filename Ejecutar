@@ -25,6 +25,9 @@ mv output.csv CSV_salidas/r_mode_0/seed_9.csv
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=3 #-gui
 mv output.csv CSV_salidas/r_mode_0/seed_3.csv
 
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=4 #-gui
+mv output.csv CSV_salidas/r_mode_0/seed_4.csv
+
 #--------------------TEST_R_MODE_1-----------------------------------------------------
 
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_1 +ntb_random_seed=10 #-gui
@@ -39,6 +42,8 @@ mv output.csv CSV_salidas/r_mode_1/seed_15.csv
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_1 +ntb_random_seed=17 #-gui
 mv output.csv CSV_salidas/r_mode_1/seed_17.csv
 
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_1 +ntb_random_seed=12 #-gui
+mv output.csv CSV_salidas/r_mode_1/seed_12.csv
 #--------------------TEST_R_MODE_2-----------------------------------------------------
 
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_2 +ntb_random_seed=24 #-gui
@@ -52,6 +57,9 @@ mv output.csv CSV_salidas/r_mode_2/seed_21.csv
 
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_2 +ntb_random_seed=25 #-gui
 mv output.csv CSV_salidas/r_mode_2/seed_25.csv
+
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_2 +ntb_random_seed=22 #-gui
+mv output.csv CSV_salidas/r_mode_2/seed_22.csv
 
 #--------------------TEST_R_MODE_3-----------------------------------------------------
 
@@ -67,6 +75,9 @@ mv output.csv CSV_salidas/r_mode_3/seed_39.csv
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_3 +ntb_random_seed=33 #-gui
 mv output.csv CSV_salidas/r_mode_3/seed_33.csv
 
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_3 +ntb_random_seed=34 #-gui
+mv output.csv CSV_salidas/r_mode_3/seed_34.csv
+
 #--------------------TEST_R_MODE_4-----------------------------------------------------
 
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_4 +ntb_random_seed=41 #-gui
@@ -81,6 +92,8 @@ mv output.csv CSV_salidas/r_mode_4/seed_46.csv
 ./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_4 +ntb_random_seed=48 #-gui
 mv output.csv CSV_salidas/r_mode_4/seed_48.csv
 
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_4 +ntb_random_seed=43 #-gui
+mv output.csv CSV_salidas/r_mode_4/seed_43.csv
 
 
 
@@ -88,6 +101,12 @@ mv output.csv CSV_salidas/r_mode_4/seed_48.csv
 rm -rf salida* csrc ucli.key vc_hdrs.h csrc/ log_test novas.conf ucli.key vc_hdrs.h verdiLog/ inter.fsdb novas_dump.log novas.rc verdi_config_file
 
 
+#-----------ABRE TODOS LOS CSV PARA REVISARLOS--------------------
+gedit CSV_salidas/r_mode_0/* &
+gedit CSV_salidas/r_mode_1/* &
+gedit CSV_salidas/r_mode_2/* &
+gedit CSV_salidas/r_mode_3/* &
+gedit CSV_salidas/r_mode_4/* &
 
 
 
