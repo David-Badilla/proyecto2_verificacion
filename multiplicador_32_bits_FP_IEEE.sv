@@ -689,7 +689,7 @@ module ROUND(
   
   assign Z_up = sign_Z ? {1'b0, Z_in[26:3]} : Z_plus;
   assign Z_down = sign_Z ? Z_plus : {1'b0, Z_in[26:3]};
-  
+
   assign Z_near_even = !Z_in[2] ? Z_in[26:3] : (|Z_in[1:0] ? Z_plus : (Z_in[3] ? Z_plus : Z_in[26:3]));
   assign Z_near_max = !Z_in[2] ? Z_in[26:3] : Z_plus;
   
@@ -778,7 +778,7 @@ module FPM(
   input [2:0]r_mode,
   input [31:0]fp_X, fp_Y,
   output [31:0]fp_Z,
-  output ovrf, udrf);
+  output ovrf, udrf, NAN);
   
   wire [31:0]z;
   
@@ -788,6 +788,8 @@ module FPM(
   wire nan, inf, zer;
   wire norm_n, norm_r;
   wire sign_Z;
+	
+  assign NAN=nan;
   
   assign exp_X = fp_X[30:23];
   assign exp_Y = fp_Y[30:23];
@@ -848,7 +850,7 @@ module top(
   input [2:0]r_mode,
   input [31:0]fp_X, fp_Y,
   output [31:0]fp_Z,
-  output ovrf, udrf);
+  output ovrf, udrf,NAN);
   
   FPM FPM(.r_mode(r_mode),
           .fp_X(fp_X),
@@ -856,6 +858,7 @@ module top(
           
           .fp_Z(fp_Z),
           .ovrf(ovrf),
-          .udrf(udrf));
+          .udrf(udrf),
+          .NAN(NAN));
   
 endmodule

@@ -9,7 +9,7 @@ class my_seq_item extends uvm_sequence_item;
 
 	//salidas
 	bit[31:0] Z;
-	bit ovrf,udrf;
+	bit ovrf,udrf,NAN;
 
 	//Extras para enviarlas de reporte al CSV
 	bit[31:0] Zteorica;
@@ -46,7 +46,7 @@ class my_seq_item extends uvm_sequence_item;
 	constraint pro {proba inside{[0:20]};}
 	
 
-	typedef enum {NAN, INF, CERO, NORMAL} tipo_num;
+	typedef enum {NAN1, INF, CERO, NORMAL} tipo_num;
 	rand tipo_num tipo1;
 	rand tipo_num tipo2;
 	
@@ -69,7 +69,7 @@ class my_seq_item extends uvm_sequence_item;
 	// Funcion para colocar exponente y mantisa depenciendo del tipo de transaccion especial
 	function [30:0] colocar( tipo_num prim,bit [7:0] e1, bit [22:0] mant1);
 		case(prim)
-			NAN: return {8'b11111111, mant1};
+			NAN1: return {8'b11111111, mant1};
 			INF: return {8'b11111111, 23'b0};
 			CERO: return {8'b0,23'b0};
 			NORMAL: return {e1,mant1};

@@ -33,6 +33,7 @@ class my_monitor extends uvm_monitor;
 				item.Z = vif.cb.fp_Z;;
 				item.ovrf = vif.cb.ovrf;
 				item.udrf = vif.cb.udrf;
+				item.NAN = vif.cb.NAN;
 				//Se envia al puerto de analisis
 				mon_analysis_port.write(item);
 				`uvm_info("MON",$sformatf("VISTO item %s",item.convert2string()),UVM_HIGH);

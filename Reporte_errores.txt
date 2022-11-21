@@ -18,11 +18,48 @@
 	bd8aaea3, c0c2a296, 3ed2e0d7, 3ed2e0d6, 	 0, 		1, 			0, 			0, 		0, 		0 
 	10c3b6de, c9fe2509, 9b424bc1, 9b424bc0, 	 0, 		1, 			0, 			0, 		0, 		0 
 
+Error en la linea 693 del DUT
+  assign Z_near_even = !Z_in[2] ? Z_in[26:3] : (|Z_in[1:0] ? Z_plus : (Z_in[3] ? Z_plus : Z_in[26:3]));
+
 
 2. El DUT no tiene la salida NAN
+	Las salidas actuales son ovrf y udrf
 
+	Solucionado Nuevo reporte csv:
+			X  , 	 Y,  		Z, 	  Z teorica ,	R_mode , Round_bit, Guard|Sticky , PASS , ovrf , udrf ,  NAN 
+		85a36341, ffb5cbfb, 7fc00000, 7fc00000, 	 0, 		0, 			0, 			1, 		0, 		0, 		1
+		ff880f93, 7f800000, 7fc00000, 7fc00000, 	 0, 		0, 			0, 			1, 		1, 		0, 		1
+		7ff2a4b9, ff800000, 7fc00000, 7fc00000, 	 0, 		0, 			0, 			1, 		1, 		0, 		1
+
+	Nuevo prototipo en test_bench:
+		   top DUT(
+			.clk(clk),
+			.r_mode(vif.r_mode),
+			.fp_X(vif.fp_X), 
+			.fp_Y(vif.fp_Y),
+			.fp_Z(vif.fp_Z),
+			.ovrf(vif.ovrf), 
+			.udrf(vif.udrf),
+			.NAN(vif.NAN)
+			);
 
 
 3. El DUT activa la bandera de overflow cuando hay un NAN
 
-
+		X  , 	 Y,  		Z, 	  Z teorica ,	R_mode , Round_bit, Guard|Sticky , PASS , ovrf , udrf
+	7ff2a4b9, ff800000, 7fc00000, 7fc00000, 	 0, 		0, 			0, 			0, 		1, 		0 
+	ffe77ebc, 42610833, 7fc00000, 7fc00000, 	 0, 		0, 			0, 			0, 		1, 		0 
+	7fceda6b, ffe41378, 7fc00000, 7fc00000, 	 0, 		0, 			0, 			0, 		1, 		0 
+	7f800000, ff9bc34b, 7fc00000, 7fc00000, 	 0, 		0, 			0, 			0, 		1, 		0 
+	e41718c9, fff7dfd9, 7fc00000, 7fc00000, 	 1, 		0, 			0, 			0, 		1, 		0 
+	7fa3d1bf, ff800000, 7fc00000, 7fc00000, 	 1, 		0, 			0, 			0, 		1, 		0 
+	ff886697, 7ff4d356, 7fc00000, 7fc00000, 	 2, 		0, 			0, 			0, 		1, 		0 
+	7f957970, ff800000, 7fc00000, 7fc00000, 	 2, 		0, 			0, 			0, 		1, 		0 
+	7f800000, 7fe5dc7f, 7fc00000, 7fc00000, 	 3, 		0, 			0, 			0, 		1, 		0 
+	ff879886, d48c2abf, 7fc00000, 7fc00000, 	 3, 		0, 			0, 			0, 		1, 		0 
+	7fce495d, 6942868f, 7fc00000, 7fc00000, 	 3, 		0, 			0, 			0, 		1, 		0 
+	7fe030ae, 701512d2, 7fc00000, 7fc00000, 	 3, 		0, 			0, 			0, 		1, 		0 
+	ff839ff6, ff800000, 7fc00000, 7fc00000, 	 4, 		0, 			0, 			0, 		1, 		0 
+	7f800000, ff8a1d35, 7fc00000, 7fc00000, 	 4, 		0, 			0, 			0, 		1, 		0 
+	7fd10d05, fbcb891f, 7fc00000, 7fc00000, 	 4, 		0, 			0, 			0, 		1, 		0 
+	ffa92bd5, 7fed5af2, 7fc00000, 7fc00000, 	 4, 		0, 			0, 			0, 		1, 		0 

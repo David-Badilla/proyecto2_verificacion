@@ -30,7 +30,8 @@ module tb_top;
 		.fp_Y(vif.fp_Y),
 		.fp_Z(vif.fp_Z),
 		.ovrf(vif.ovrf), 
-		.udrf(vif.udrf)
+		.udrf(vif.udrf),
+		.NAN(vif.NAN)
 		);
 
 	initial begin

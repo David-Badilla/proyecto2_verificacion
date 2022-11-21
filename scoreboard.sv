@@ -1,5 +1,5 @@
 class my_scoreboard extends uvm_scoreboard;
-	`uvm_component_utils(my_scoreboard) //component
+	`uvm_component_utils(my_scoreboard) 
 	function new (string name = "my_scoreboard", uvm_component parent= null);
 		super.new(name,parent);
 	endfunction
@@ -27,10 +27,12 @@ class my_scoreboard extends uvm_scoreboard;
 
 		udrfTeorico=0;ovrfTeorico=0;NANteorico=0;		
 		if (esperadoIEEE==32'h80000000 | esperadoIEEE==32'h00000000) udrfTeorico=1;
-		//temp1=item.X; temp2=item.Y;
-		//if (temp1[30:23]==0 | temp2[30:23]==0) udrfTeorico=0;  	// Revisa si el cero en la salida esta dado por alguna entrada desnormalizada ""REVISAR"""
+		temp1=item.X; temp2=item.Y;
+
 		if (esperadoIEEE==32'hff800000 | esperadoIEEE==32'h7f800000) ovrfTeorico=1;
-		if (esperadoIEEE==32'h7fc00000) NANteorico=1; //La propia funcion revisa si alguna de las entradas es NAN y devuelve ese resultados
+
+		if (esperadoIEEE==32'h7fc00000 ) NANteorico=1; //La propia funcion revisa si alguna de las entradas es NAN y devuelve ese resultados
+		if (esperadoIEEE==32'h7fc00000 && item.ovrf==1) ovrfTeorico=1;
 
 
 
@@ -58,6 +60,7 @@ class my_scoreboard extends uvm_scoreboard;
 				default esperadoIEEE=esperadoIEEE; 
 			endcase
 		end
+
 		//Guarda valores teoricos para usarlos en el informe CSV luego
 		item.Zteorica = esperadoIEEE;
 		item.Round_bit = Round_bit;
@@ -65,7 +68,7 @@ class my_scoreboard extends uvm_scoreboard;
 
 		
 		//Se hace la comparacion entre el valor en formato IEEE recibido con el esperado calculado anteriormente
-		if (item.Z==esperadoIEEE && item.udrf==udrfTeorico && item.ovrf==ovrfTeorico)begin
+		if (item.Z==esperadoIEEE && item.udrf==udrfTeorico && item.ovrf==ovrfTeorico && item.NAN==NANteorico)begin
 			`uvm_info("*SCB*", $sformatf ("PASS! Match  X=%h, Y=%h, Z=%h ,Teorico=%h, R_Mode = %g , R_bit %b , guard|sticky %b",item.X,item.Y,item.Z,item.Zteorica,item.r_mode, Round_bit,guard|sticky),UVM_LOW)
 			//Guarda si fue correcto o no para el informe CSV luego
 			item.pass=1;
@@ -85,7 +88,7 @@ class my_scoreboard extends uvm_scoreboard;
 
 
 
-//********************FUNCION PARA LA MULTIPLICACION DE DOS NUEMEROS 32 BITS FORMATO IEEE745********************************
+//********************FUNCION REFERENCIA PARA LA MULTIPLICACION DE DOS NUEMEROS 32 BITS FORMATO IEEE745********************************
 	bit [7:0] exp1,exp2;
 	bit [46:0] mant1;
 	bit [23:0] mant2;
@@ -109,8 +112,10 @@ class my_scoreboard extends uvm_scoreboard;
 		mant2={1'b1,num2[22:0]};
 
 
-		if ((num1[22:0]==0 & exp1==0)|(num2[22:0]==0 & exp2==0)|exp1==0|exp2==0) return {sig,8'b0,1'b0,25'b0}; //Revisa si las entradas son diferentes de 0
+		if ((num1[22:0]==0 & exp1==8'b11111111)&(num2[22:0]==0 & exp2==8'b0)| (num2[22:0]==0 & exp2==8'b11111111)&(num1[22:0]==0 & exp1==8'b0)	) return {1'b0,8'b11111111,1'b1,25'b0}; //Revisa si la operacion es INF * CERO o CERO * INF
 		if ((num1[22:0]!=0 & exp1==8'b11111111)|(num2[22:0]!=0 & exp2==8'b11111111)) return {1'b0,8'b11111111,1'b1,25'b0}; //Revisa si las entradas son NOT a NUMBER (NAN)
+		if ((num1[22:0]==0 & exp1==0)|(num2[22:0]==0 & exp2==0)|exp1==0|exp2==0) return {sig,8'b0,1'b0,25'b0}; //Revisa si las entradas son diferentes de 0
+	
 		if ((num1[22:0]==0 & exp1==8'b11111111)|(num2[22:0]==0 & exp2==8'b11111111)) return {sig,8'b11111111,1'b0,25'b0}; //Revisa si las entradas son INFINITO (INF)
 		//Al ser fraccionarias los ceros a la derecha se deben eliminar
 		aux1=0;
@@ -178,11 +183,11 @@ class my_scoreboard extends uvm_scoreboard;
 		mantnueva=0;
 		
 		if (expfi>=255)begin //Revisa si el nuevo exponente se sale del maximo permitido en el estandar IEEE754
-			$display("		OVRFLOW: %g\n",expfi);
+			//$display("		OVRFLOW: %g\n",expfi);
 			return {sig,8'b11111111,mantnueva};
 		end
 		if (expfi<=0) begin//Revisa si el nuevo exponente se sale del minimo permitido en el estandar IEEE754
-			$display("		UNDRFLOW: %g\n",expfi);
+			//$display("		UNDRFLOW: %g\n",expfi);
 			return {sig,8'b00000000,mantnueva};
 
 		end
@@ -201,7 +206,7 @@ class my_scoreboard extends uvm_scoreboard;
 
 		expfinal=expfi;	
 		res={sig,expfinal,mantnueva};
-		$display ("		salida: %b , rbit: %b , guard: %b , stic: %b \nhex: %h	",res[34:3],res[2],res[1],res[0],res[34:3]);
+		//$display ("		salida: %b , rbit: %b , guard: %b , stic: %b \nhex: %h	",res[34:3],res[2],res[1],res[0],res[34:3]);
 		return res;
 
 	endfunction 
@@ -224,12 +229,12 @@ class my_scoreboard extends uvm_scoreboard;
 		//$display("\n		CANTIDAD DE TRANSACCIONES : %g",tamano_sb);
 		//Crea un archivo csv para almacenar los datos importantes		
 		f = $fopen("output.csv", "w");
-		$fwrite(f, "	X  , 	 Y,  		Z, 	  Z teorica ,	R_mode , Round_bit, Guard|Sticky , PASS , ovrf , udrf \n");
+		$fwrite(f, "	X  , 	 Y,  		Z, 	  Z teorica ,	R_mode , Round_bit, Guard|Sticky , PASS , ovrf , udrf ,  NAN \n");
 		for (int i=0;i<tamano_sb;i++)begin
 			my_seq_item item = my_seq_item::type_id::create("item");
 			item=scoreboard.pop_front; //Saca el dato de la cola 
 			//Escribe de manera bonita los datos en el csv
-			$fwrite(f, "%h, %h, %h, %h, 	 %g, 		%b, 			%b, 			%b, 		%b, 		%b \n", 
+			$fwrite(f, "%h, %h, %h, %h, 	 %g, 		%b, 			%b, 			%b, 		%b, 		%b, 		%b	\n", 
 				        item.X,
 				            item.Y ,
 				                item.Z ,
@@ -239,7 +244,7 @@ class my_scoreboard extends uvm_scoreboard;
 				                                                        item.guardORsticky ,
 				                                                                        item.pass ,
 				                                                                                     item.ovrf ,
-																												item.udrf);
+																												item.udrf, item.NAN);
 		end
 
 
