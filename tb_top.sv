@@ -14,6 +14,7 @@ module tb_top;
 	reg [31:0] fp_Z;
 	wire ovrf;
 	wire udrf;
+	wire NAN;
 	//$dumpfile("tb_top.vcd")
 	//$dumpvars(0,test); 
 	// Instantiate the Unit Under Test (UUT)
@@ -24,7 +25,8 @@ module tb_top;
 		.fp_Y(fp_Y),
 		.fp_Z(fp_Z),
 		.ovrf(ovrf), 
-		.udrf(udrf)
+		.udrf(udrf),
+		.NAN(NAN)
 		);
 	
 	initial begin
@@ -54,12 +56,17 @@ module tb_top;
 	bit [31:0] mul,mul2;
 	always@(posedge clk)begin
 
-		mul =32'hf2a37f9e;//5.5
-		mul2=32'h6f18da51;//-2.25
+		mul =32'hbbf67aa9;//5.5
+		mul2=32'h9aa16ba1;//-2.25
 		c=Multi(mul,mul2);
 		esperadoIEEE=c[34:3];
-		$display("\n\n 		Multi:: %b",esperadoIEEE);//11000001010001100000000000000000  
+
+		r_mode=0;
+		fp_X=32'hbbf67aa9;
+		fp_Y=32'h9aa16ba1;
+		$display("\n\n 		Multi:: %b res: %b , %h",esperadoIEEE, fp_Z, fp_Z);//11000001010001100000000000000000  
 		//-150.074981689
+		#2000;
 		$finish;
 	end
 
@@ -128,7 +135,7 @@ function [34:0] Multi(bit [31:0]num1,bit [31:0] num2);
 			espacios+=1;
 		end
 	end
-	//$display("\n		RESULTADO : %b\n",resultado); 
+	$display("\n		RESULTADO : %b\n",resultado); 
 	cont=0;
 	ini=0;
 	//if(resultado[45:32]!=0)begin

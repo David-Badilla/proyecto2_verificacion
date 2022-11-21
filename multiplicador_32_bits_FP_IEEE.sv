@@ -661,8 +661,8 @@ module NORM(
   
   assign Z_shift = Z_in << !Z_in[47];
   
-  assign Z_out[26:1] = Z_shift[47:22];
-  assign Z_out[0] = |Z_shift[21:0]; //sticky
+  assign Z_out[26:0] = Z_shift[47:21]; //Aqui estaba el error 1 
+ // assign Z_out[0] = |Z_shift[21:0]; //sticky
   
   assign norm_n = Z_in[47];
   

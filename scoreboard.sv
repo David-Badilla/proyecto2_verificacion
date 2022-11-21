@@ -31,7 +31,7 @@ class my_scoreboard extends uvm_scoreboard;
 
 		if (esperadoIEEE==32'hff800000 | esperadoIEEE==32'h7f800000) ovrfTeorico=1;
 
-		if (esperadoIEEE==32'h7fc00000 ) NANteorico=1; //La propia funcion revisa si alguna de las entradas es NAN y devuelve ese resultados
+		if (esperadoIEEE==32'h7fc00000 ) NANteorico=1; //La propia funcion multi revisa si alguna de las entradas es NAN y devuelve ese resultados
 		if (esperadoIEEE==32'h7fc00000 && item.ovrf==1) ovrfTeorico=1;
 
 

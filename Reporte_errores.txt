@@ -18,8 +18,21 @@
 	bd8aaea3, c0c2a296, 3ed2e0d7, 3ed2e0d6, 	 0, 		1, 			0, 			0, 		0, 		0 
 	10c3b6de, c9fe2509, 9b424bc1, 9b424bc0, 	 0, 		1, 			0, 			0, 		0, 		0 
 
-Error en la linea 693 del DUT
-  assign Z_near_even = !Z_in[2] ? Z_in[26:3] : (|Z_in[1:0] ? Z_plus : (Z_in[3] ? Z_plus : Z_in[26:3]));
+Error en la linea 664 y 665 del DUT en el modulo NORM 
+  assign Z_out[26:1] = Z_shift[47:22];
+  assign Z_out[0] = |Z_shift[21:0]; //sticky
+
+El assign Z_out[0] para el sticky esta haciendo un or con todos los bits del [21:0] cuando el sticky solo es el siguiente bit solo el 21
+
+Solucion se sustituyen esas 2 lineas por 
+
+  assign Z_out[26:0] = Z_shift[47:21];
+ // assign Z_out[0] = |Z_shift[21:0]; //sticky
+
+Para incluir el el Z_out el bit 21 y no utilizar el siguiente assign con el or
+
+
+
 
 
 2. El DUT no tiene la salida NAN

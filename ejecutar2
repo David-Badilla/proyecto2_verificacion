@@ -3,6 +3,7 @@ source /mnt/vol_NFS_rh003/estudiantes/archivos_config/synopsys_tools.sh
 
 vcs -Mupdate test_bench.sv -o salida -full64 -debug_acc+all -debug_region+cell+encrypt -sverilog -l log_test -ntb_opts uvm +lint=TFIPC-L -cm line+tgl+cond+fsm+branch+assert -kdb;
 
-./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=1 -gui
-mv output.csv CSV_salidas/r_mode_0/seed_1.csv  #MUEVE Y CAMBIA EL NOMBRE
+#./salida #-gui
+./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=1 #-gui
+#mv output.csv CSV_salidas/r_mode_0/seed_1.csv  #MUEVE Y CAMBIA EL NOMBRE
 
