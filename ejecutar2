@@ -1,9 +1,0 @@
-source /mnt/vol_NFS_rh003/estudiantes/archivos_config/synopsys_tools.sh
-#rm -rf salida* csrc ucli.key vc_hdrs.h csrc/ log_test novas.conf ucli.key vc_hdrs.h verdiLog/ inter.fsdb novas_dump.log novas.rc verdi_config_file
-
-vcs -Mupdate test_bench.sv -o salida -full64 -debug_acc+all -debug_region+cell+encrypt -sverilog -l log_test -ntb_opts uvm +lint=TFIPC-L -cm line+tgl+cond+fsm+branch+assert -kdb;
-
-#./salida #-gui
-./salida +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=test_r_mode_0 +ntb_random_seed=1 #-gui
-#mv output.csv CSV_salidas/r_mode_0/seed_1.csv  #MUEVE Y CAMBIA EL NOMBRE
-
